@@ -162,9 +162,7 @@ class PantallaClientes(ctk.CTkFrame):
                 font=fuente(9, True),
             ).pack(anchor="center")
 
-        facturado = sum(
-            pedido.total for cliente in clientes for pedido in cliente.pedidos
-        )
+        facturado = sum(pedido.total for cliente in clientes for pedido in cliente.pedidos)
         self._pildora_conteo.actualizar(
             f"{len(clientes)} de {total} clientes",
             TEXTO_MEDIO,
@@ -224,21 +222,31 @@ class ModalClienteNuevo(Modal):
 
     def _guardar(self) -> None:
         self.limpiar_error()
+        nombre = self.nombre.valor().strip()
+        documento = self.documento.valor().strip()
+
+        if not nombre or not documento:
+            mensaje = "Por favor complete los campos obligatorios (Nombre y Documento)"
+            self.mostrar_error(mensaje)
+            self.app.notificar(mensaje, "alerta")
+            return
+
         try:
-            cliente = self.app.clientes.crear(
-                nombre=self.nombre.valor(),
-                documento=self.documento.valor(),
+            self.app.clientes.crear(
+                nombre=nombre,
+                documento=documento,
                 telefono=self.telefono.valor(),
                 email=self.email.valor(),
                 direccion=self.direccion.valor(),
             )
         except (ErrorDominio, ValueError) as exc:
             self.mostrar_error(str(exc))
+            self.app.notificar(str(exc), "error")
             return
 
         self.al_guardar()
         self.cerrar()
-        self.app.notificar(f"Cliente {cliente.nombre} registrado correctamente.")
+        self.app.notificar("Cliente registrado exitosamente")
 
 
 class ModalCliente(Modal):

@@ -84,9 +84,7 @@ def test_relacion_nm_producto_etiqueta(db_session):
     # Entonces se recuperan sus etiquetas y la navegacion inversa N:M
     assert producto_db is not None
     assert {etiqueta.nombre for etiqueta in producto_db.etiquetas} == {"hogar", "empresa"}
-    assert all(
-        p.sku == "ONT-001" for etiqueta in producto_db.etiquetas for p in etiqueta.productos
-    )
+    assert all(p.sku == "ONT-001" for etiqueta in producto_db.etiquetas for p in etiqueta.productos)
 
 
 def test_eliminar_pedido_elimina_sus_detalles(db_session):

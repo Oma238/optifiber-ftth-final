@@ -40,9 +40,7 @@ def mostrar_catalogo(session: Session) -> None:
     productos = CatalogoRepositorio(session).listar_productos()
     print("\nCATALOGO DE PRODUCTOS FTTH")
     print("-" * 118)
-    print(
-        f"{'SKU':<10} {'Producto':<36} {'Categoria':<26} {'Precio':>12} {'Stock':>6}  Etiquetas"
-    )
+    print(f"{'SKU':<10} {'Producto':<36} {'Categoria':<26} {'Precio':>12} {'Stock':>6}  Etiquetas")
     print("-" * 118)
     for producto in productos:
         etiquetas = ", ".join(etiqueta.nombre for etiqueta in producto.etiquetas)
