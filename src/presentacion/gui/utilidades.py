@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from datetime import date
 
 from src.presentacion.gui.tema import (
@@ -34,6 +35,8 @@ MESES = (
 DIAS = ("lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo")
 
 SUFIJOS_EMPRESA = {"SAC", "SA", "EIRL", "SRL"}
+
+MENSAJE_NUMERICO = "El valor debe ser numérico y mayor a cero"
 
 COLORES_ESTADO = {
     "PENDIENTE": (ALERTA, ALERTA_FONDO),
@@ -83,6 +86,28 @@ def iniciales(nombre: str) -> str:
     if len(partes) == 1:
         return partes[0][:2].upper()
     return f"{partes[0][0]}{partes[-1][0]}".upper()
+
+
+def convertir_decimal_positivo(texto: object) -> float:
+    """Convierte un monto escrito por el usuario y exige un numero mayor a cero."""
+    try:
+        valor = float(str(texto).strip().replace(",", "."))
+    except (TypeError, ValueError) as exc:
+        raise ValueError(MENSAJE_NUMERICO) from exc
+    if not math.isfinite(valor) or valor <= 0:
+        raise ValueError(MENSAJE_NUMERICO)
+    return valor
+
+
+def convertir_entero_positivo(texto: object) -> int:
+    """Convierte una cantidad o stock escrito por el usuario y exige un valor > 0."""
+    try:
+        valor = int(str(texto).strip())
+    except (TypeError, ValueError) as exc:
+        raise ValueError(MENSAJE_NUMERICO) from exc
+    if valor <= 0:
+        raise ValueError(MENSAJE_NUMERICO)
+    return valor
 
 
 def colores_estado(estado: str) -> tuple[str, str]:
