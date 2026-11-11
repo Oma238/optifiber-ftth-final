@@ -202,9 +202,7 @@ class PantallaPedidos(ctk.CTkFrame):
         visibles = [
             cliente
             for cliente in self._clientes
-            if not texto
-            or texto in cliente.nombre.lower()
-            or texto in cliente.documento.lower()
+            if not texto or texto in cliente.nombre.lower() or texto in cliente.documento.lower()
         ]
 
         if not visibles:
@@ -217,9 +215,7 @@ class PantallaPedidos(ctk.CTkFrame):
             return
 
         for cliente in visibles:
-            seleccionado = (
-                self.cliente_sel is not None and self.cliente_sel.id == cliente.id
-            )
+            seleccionado = self.cliente_sel is not None and self.cliente_sel.id == cliente.id
             fila = ctk.CTkFrame(
                 self._lista_clientes,
                 fg_color=ACENTO_FONDO if seleccionado else PANEL_ALT,
@@ -327,9 +323,7 @@ class PantallaPedidos(ctk.CTkFrame):
         visibles = [
             producto
             for producto in self._productos
-            if not texto
-            or texto in producto.nombre.lower()
-            or texto in producto.sku.lower()
+            if not texto or texto in producto.nombre.lower() or texto in producto.sku.lower()
         ]
 
         if not visibles:

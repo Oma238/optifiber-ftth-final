@@ -293,9 +293,7 @@ class ModalProducto(Modal):
             return
 
         etiquetas = [
-            etiqueta.strip()
-            for etiqueta in self.etiquetas.valor().split(",")
-            if etiqueta.strip()
+            etiqueta.strip() for etiqueta in self.etiquetas.valor().split(",") if etiqueta.strip()
         ]
         categoria_id = next(
             categoria.id
