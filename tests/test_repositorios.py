@@ -107,3 +107,35 @@ def test_catalogo_lista_productos_con_categoria_y_etiquetas(db_session, datos_ba
     assert productos[0].categoria.nombre == "Equipos ONT/ONU"
     assert productos[0].etiquetas[0].nombre == "hogar"
     assert productos[0].sku == "ONT-001"
+
+
+@pytest.mark.parametrize("estado", ["PENDIENTE", "PAGADO", "ENVIADO"])
+def test_cancelar_devuelve_stock_una_sola_vez(db_session, datos_base, estado):
+    repo = PedidoRepositorio(db_session)
+    pedido = repo.crear_pedido("12345678", [("ONT-001", 2)], estado=estado)
+    repo.cambiar_estado(pedido.id, "CANCELADO")
+    repo.cambiar_estado(pedido.id, "CANCELADO")
+    db_session.expire_all()
+    assert datos_base["producto"].stock == 10
+    assert repo.obtener(pedido.id).estado == "CANCELADO"
+
+
+def test_reactivar_reserva_stock_y_cancelar_lo_restituye(db_session, datos_base):
+    repo = PedidoRepositorio(db_session)
+    pedido = repo.crear_pedido("12345678", [("ONT-001", 2)], estado="CANCELADO")
+    assert datos_base["producto"].stock == 10
+    repo.cambiar_estado(pedido.id, "PENDIENTE")
+    assert datos_base["producto"].stock == 8
+    repo.cambiar_estado(pedido.id, "CANCELADO")
+    assert datos_base["producto"].stock == 10
+
+
+def test_reactivar_sin_stock_conserva_cancelacion(db_session, datos_base):
+    repo = PedidoRepositorio(db_session)
+    pedido = repo.crear_pedido("12345678", [("ONT-001", 2)], estado="CANCELADO")
+    repo.crear_pedido("12345678", [("ONT-001", 10)])
+    with pytest.raises(ErrorDominio, match="Stock insuficiente"):
+        repo.cambiar_estado(pedido.id, "PENDIENTE")
+    db_session.expire_all()
+    assert repo.obtener(pedido.id).estado == "CANCELADO"
+    assert datos_base["producto"].stock == 0

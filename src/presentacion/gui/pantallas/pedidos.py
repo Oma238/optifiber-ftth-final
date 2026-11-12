@@ -155,6 +155,8 @@ class PantallaPedidos(ctk.CTkFrame):
             )
 
     def _vista_nuevo(self) -> None:
+        self._productos = self.app.catalogo.listar_productos()
+        self._por_sku = {producto.sku: producto for producto in self._productos}
         self._vista.grid_columnconfigure(0, minsize=282, weight=0)
         self._vista.grid_columnconfigure(1, weight=1)
         self._vista.grid_columnconfigure(2, minsize=330, weight=0)
@@ -202,9 +204,7 @@ class PantallaPedidos(ctk.CTkFrame):
         visibles = [
             cliente
             for cliente in self._clientes
-            if not texto
-            or texto in cliente.nombre.lower()
-            or texto in cliente.documento.lower()
+            if not texto or texto in cliente.nombre.lower() or texto in cliente.documento.lower()
         ]
 
         if not visibles:
@@ -217,9 +217,7 @@ class PantallaPedidos(ctk.CTkFrame):
             return
 
         for cliente in visibles:
-            seleccionado = (
-                self.cliente_sel is not None and self.cliente_sel.id == cliente.id
-            )
+            seleccionado = self.cliente_sel is not None and self.cliente_sel.id == cliente.id
             fila = ctk.CTkFrame(
                 self._lista_clientes,
                 fg_color=ACENTO_FONDO if seleccionado else PANEL_ALT,
@@ -327,9 +325,7 @@ class PantallaPedidos(ctk.CTkFrame):
         visibles = [
             producto
             for producto in self._productos
-            if not texto
-            or texto in producto.nombre.lower()
-            or texto in producto.sku.lower()
+            if not texto or texto in producto.nombre.lower() or texto in producto.sku.lower()
         ]
 
         if not visibles:
@@ -734,7 +730,7 @@ class PantallaPedidos(ctk.CTkFrame):
 
         self._busqueda_historial = ctk.CTkEntry(
             barra,
-            placeholder_text="Buscar por cliente o documento...",
+            placeholder_text="Buscar pedido, cliente, documento o producto...",
             placeholder_text_color=TEXTO_TENUE,
             height=36,
             width=320,
@@ -803,7 +799,14 @@ class PantallaPedidos(ctk.CTkFrame):
         for pedido in pedidos:
             if filtro != "Todos los estados" and pedido.estado != filtro:
                 continue
-            contenido = f"{pedido.cliente.nombre} {pedido.cliente.documento}"
+            productos = " ".join(
+                f"{detalle.producto.sku} {detalle.producto.nombre}"
+                for detalle in pedido.detalles
+            )
+            contenido = (
+                f"#{pedido.id:03d} {pedido.id} {pedido.cliente.nombre} "
+                f"{pedido.cliente.documento} {productos}"
+            )
             if texto and texto not in contenido.lower():
                 continue
             visibles.append(pedido)

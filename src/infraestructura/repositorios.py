@@ -252,7 +252,8 @@ class PedidoRepositorio:
                         raise ErrorDominio(f"No existe un producto con el SKU {sku_normalizado}.")
 
                     validar_cantidad(cantidad)
-                    validar_stock(cantidad, producto.stock)
+                    if estado != "CANCELADO":
+                        validar_stock(cantidad, producto.stock)
 
                     subtotal = calcular_subtotal(cantidad, producto.precio)
                     detalle = DetallePedidoModel(
@@ -263,7 +264,8 @@ class PedidoRepositorio:
                     )
                     pedido.detalles.append(detalle)
                     lineas.append((cantidad, producto.precio))
-                    producto.stock -= cantidad
+                    if estado != "CANCELADO":
+                        producto.stock -= cantidad
 
             pedido.total = calcular_total_pedido(lineas)
             self.session.add(pedido)
@@ -280,10 +282,27 @@ class PedidoRepositorio:
         pedido = self.session.get(PedidoModel, pedido_id)
         if pedido is None:
             raise ErrorDominio(f"No existe el pedido {pedido_id}.")
-        pedido.estado = estado
-        self.session.commit()
-        self.session.refresh(pedido)
-        return pedido
+        if pedido.estado == estado:
+            return pedido
+
+        try:
+            # Salir de CANCELADO vuelve a reservar el inventario.
+            if pedido.estado == "CANCELADO":
+                for detalle in pedido.detalles:
+                    validar_stock(detalle.cantidad, detalle.producto.stock)
+                for detalle in pedido.detalles:
+                    detalle.producto.stock -= detalle.cantidad
+            elif estado == "CANCELADO":
+                for detalle in pedido.detalles:
+                    detalle.producto.stock += detalle.cantidad
+
+            pedido.estado = estado
+            self.session.commit()
+            self.session.refresh(pedido)
+            return pedido
+        except Exception:
+            self.session.rollback()
+            raise
 
     def eliminar(self, pedido_id: int) -> bool:
         pedido = self.session.get(PedidoModel, pedido_id)
