@@ -800,8 +800,7 @@ class PantallaPedidos(ctk.CTkFrame):
             if filtro != "Todos los estados" and pedido.estado != filtro:
                 continue
             productos = " ".join(
-                f"{detalle.producto.sku} {detalle.producto.nombre}"
-                for detalle in pedido.detalles
+                f"{detalle.producto.sku} {detalle.producto.nombre}" for detalle in pedido.detalles
             )
             contenido = (
                 f"#{pedido.id:03d} {pedido.id} {pedido.cliente.nombre} "

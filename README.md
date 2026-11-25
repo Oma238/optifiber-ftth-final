@@ -10,3 +10,15 @@
 | **Kevin Jesus Llerena Fernandez** | Lead Backend Engineer |  | Reglas de negocio puras en , servicios de totales/descuento/stock y capa de repositorios. |
 | **Amaru Josue Ai-me Yunguri** | Database & ORM Specialist |  | ERD, modelos ORM, claves foráneas, relaciones 1:N y N:M, reglas de cascada y restricciones. |
 | **Julio Cesar Diaz Tito** | DevOps & QA Engineer + Frontend/UX/UI Engineer |  | Fixture , suite pytest, Ruff, GitHub Actions, pantallas CustomTkinter, tema oscuro y evidencias del informe. |
+
+## Cómo ejecutar con Docker
+
+```bash
+docker compose --profile pruebas run --rm pruebas
+```
+
+Para abrir la ventana local sin contenedor:
+
+```bash
+python src/main.py
+```

@@ -15,9 +15,7 @@ RAIZ_PROYECTO = Path(__file__).resolve().parents[2]
 RUTA_DB_PREDETERMINADA = RAIZ_PROYECTO / "data" / "optifiber.db"
 RUTA_DB = os.environ.get("RUTA_DB", str(RUTA_DB_PREDETERMINADA))
 URL_DB_PREDETERMINADA = (
-    "sqlite:///:memory:"
-    if RUTA_DB == ":memory:"
-    else f"sqlite:///{Path(RUTA_DB).as_posix()}"
+    "sqlite:///:memory:" if RUTA_DB == ":memory:" else f"sqlite:///{Path(RUTA_DB).as_posix()}"
 )
 
 
