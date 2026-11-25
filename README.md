@@ -1,6 +1,15 @@
 # OptiFiber FTTH - Instructivo de Trabajo Colaborativo N° 04
 
-## Empresa: OPTIFIBER · venta de productos FTTH
+## Empresa: OPTIFER · venta de productos FTTH
+
+## Cómo ejecutar con Docker (Anexo A2)
+
+**Requisito:** Docker Desktop iniciado.
+
+- **Clonar repositorio:** `git clone https://github.com/Oma238/optifiber-ftth-final.git`
+- **Ejecutar pruebas aisladas en contenedor:** `docker compose --profile pruebas run --rm pruebas`
+- **Ejecutar la interfaz gráfica en local:** la ventana GUI se ejecuta en la PC local con `python src/main.py` o `python -m src.main` (en Linux/Docker solo corren las pruebas; la ventana GUI debe correr en la máquina anfitriona con X11 forwarding o la consola local).
+- **Detener contenedores:** `docker compose down`
 
 ### Integrantes y Roles
 
