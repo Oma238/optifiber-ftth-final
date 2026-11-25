@@ -10,3 +10,4 @@ venv/
 data/
 datos_locales/
 *.sqlite.coverage
+.coverage
