@@ -9,4 +9,4 @@ venv/
 *.sqlite3
 data/
 datos_locales/
-*.sqlite
+*.sqlite.coverage
