@@ -1,0 +1,7 @@
+services:
+  pruebas:
+    build: .
+    environment:
+      RUTA_DB: ":memory:"
+    command: pytest
+    profiles: ["pruebas"]

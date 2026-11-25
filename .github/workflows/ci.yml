@@ -4,12 +4,11 @@ on:
   push:
     branches:
       - main
-      - dev
-      - "feature/**"
+      - develop
   pull_request:
     branches:
       - main
-      - dev
+      - develop
 
 permissions:
   contents: read
@@ -23,6 +22,9 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
+      - name: Instalar dependencias del sistema (tkinter)
+        run: sudo apt-get update && sudo apt-get install -y python3-tk
+
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
@@ -34,8 +36,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verificar estilo y errores con Ruff
+      - name: Verificar errores con Ruff
         run: ruff check .
 
-      - name: Ejecutar suite de persistencia y dominio
-        run: pytest -v
+      - name: Verificar formato con Ruff
+        run: ruff format --check .
+
+      - name: Ejecutar pruebas con cobertura de dominio e infraestructura
+        run: pytest --cov=src/dominio --cov=src/infraestructura --cov-report=term-missing --cov-fail-under=70

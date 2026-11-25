@@ -7,3 +7,7 @@ venv/
 .ruff_cache/
 *.db
 *.sqlite3
+data/
+datos_locales/
+*.sqlite.coverage
+.coverage

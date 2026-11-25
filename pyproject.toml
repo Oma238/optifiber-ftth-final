@@ -15,3 +15,4 @@ ignore = ["B008"]
 testpaths = ["tests"]
 addopts = "-v"
 pythonpath = ["."]
+markers = ["critico: flujo critico ATDD marcado con ★"]

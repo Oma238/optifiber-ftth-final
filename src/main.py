@@ -11,6 +11,11 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
+
+RAIZ_PROYECTO = Path(__file__).resolve().parents[1]
+if str(RAIZ_PROYECTO) not in sys.path:
+    sys.path.insert(0, str(RAIZ_PROYECTO))
 
 
 def main(argv: list[str] | None = None) -> int:
